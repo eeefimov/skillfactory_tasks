@@ -12,6 +12,10 @@ class CryptoConverter:
     def get_price(quote: str, base: str, amount: str):
         if quote == base:
             raise ConvertionException(f"Failed to process same currency {base}.")
+            
+        if int(amount) <= 0;
+            raise ConvertionException("Enter more then 0")
+
 
         try:
             quote_ticker = keys[quote]

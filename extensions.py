@@ -13,7 +13,7 @@ class CryptoConverter:
         if quote == base:
             raise ConvertionException(f"Failed to process same currency {base}.")
             
-        if int(amount) <= 0;
+        if int(amount) <= 0:
             raise ConvertionException("Enter more then 0")
 
 

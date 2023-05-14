@@ -1,6 +1,6 @@
 import telebot
 from config import keys, TOKEN
-from utils import ConvertionException, CryptoConverter
+from extensions import ConvertionException, CryptoConverter
 
 
 bot = telebot.TeleBot(TOKEN)
@@ -8,9 +8,9 @@ bot = telebot.TeleBot(TOKEN)
 
 @bot.message_handler(commands=['start', 'help'])
 def help(message: telebot.types.Message):
-    text = "To start working with bot hit command in format:\n<Currancy name>" \
+    text = "To start working with bot hit command in one line using format:\n<Currancy price you want to know>" \
 "<Convert to> \
-<Summ converted currancy>\n Display all currency type: /values"
+<Quantity of the first currency>\n Display all currency type: /values"
     bot.reply_to(message, text)
 
 
@@ -25,13 +25,16 @@ def values(message: telebot.types.Message):
 @bot.message_handler(content_types=["text", ])
 def convert(message: telebot.types.Message):
     try:
-        values = message.text.split(" ")
+        val = message.text.split(" ")
 
-        if len(values) != 3:
-            raise ConnectionError("Too many parameters")
+        if len(val) != 3:
+            raise ConnectionError("Should be only 3 parameters!")
 
-        quote, base, amount = values
-        total_base = CryptoConverter.convert(quote, base, amount)
+        quote, base, amount = val
+        quote = quote.capitalize()
+        base = base.capitalize()
+        total_base = CryptoConverter.get_price(quote, base, amount)
+
     except ConvertionException as e:
         bot.reply_to(message, f"User error.\n{e}")
     except Exception as e:
@@ -41,4 +44,4 @@ def convert(message: telebot.types.Message):
         bot.send_message(message.chat.id, text)
 
 
-bot.polling()
+bot.polling(none_stop=True)
